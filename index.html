@@ -1,51 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReforHelper - Calculadora Tributária</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  try { tailwind = tailwind || {}; } catch(e) { window.tailwind = {}; }
+  tailwind.config = Object.assign({}, tailwind.config || {}, { darkMode: "class" });
+</script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .card {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
+        .section-title {
+            position: relative;
+            padding-bottom: 0.75rem;
         }
-        .card-content {
-            flex-grow: 1;
-        }
-        .result-value {
-            font-weight: 600;
-            color: #1F2937; /* text-gray-800 */
-        }
-        .apuracao-title {
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 700;
-            color: #4B5563; /* text-gray-600 */
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #E5E7EB; /* border-gray-200 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #3B82F6, #22C55E);
+            border-radius: 2px;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen justify-center p-8">
+<body class="font-sans bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-slate-800 min-h-screen justify-center p-4 sm:p-8 transition-colors duration-300">
+    
+    <button id="theme-toggle" type="button" class="fixed top-6 right-6 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 transition-all">
+        <svg id="theme-toggle-sun" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        <svg id="theme-toggle-moon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+    </button>
+
     <main class="w-full max-w-7xl mx-auto">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">ReforHelper</h1>
-            <p class="text-lg text-gray-600 mt-2">Simule e compare a carga tributária antes e depois da Reforma.</p>
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500 pb-2">ReforHelper</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">Simule e compare a carga tributária antes e depois da Reforma.</p>
         </header>
 
-        <div class="flex justify-center mb-6">
-            <button id="toggle-params-button" class="bg-white text-gray-700 font-semibold px-6 py-2 rounded-full shadow hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all flex items-center space-x-2">
+        <div class="flex justify-center mb-8">
+            <button id="toggle-params-button" class="bg-white text-gray-800 dark:bg-slate-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 flex items-center space-x-2">
                 <svg class="w-5 h-5 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" id="toggle-params-icon-path" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
@@ -55,39 +56,39 @@
 
         <!-- Operação de Compra -->
         <div class="mb-8">
-            <h2 class="text-3xl font-semibold text-gray-700 text-center border-b-2 border-gray-200 pb-2">Operação de Compra</h2>
+            <h2 class="section-title text-3xl font-semibold text-gray-700 dark:text-gray-300 text-center">Operação de Compra</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <!-- Coluna de Inputs (Compra) -->
             <div id="compra-params-col" class="md:col-span-1 transition-all duration-300 ease-in-out">
-                <div class="card">
-                    <div class="border-b pb-2">
-                        <h2 class="text-xl font-semibold text-gray-700">Parâmetros de Compra</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10">
+                    <div class="border-b pb-3 border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">Parâmetros de Compra</h2>
                     </div>
                     <div class="space-y-5 pt-4">
                         <div>
-                            <label for="valorBase" class="block text-sm font-medium text-gray-700">Valor da Mercadoria (R$)</label>
-                            <input type="text" id="valorBase" placeholder="0,00" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right">
+                            <label for="valorBase" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Valor da Mercadoria (R$)</label>
+                            <input type="text" id="valorBase" placeholder="0,00" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right transition-colors duration-300">
                         </div>
                         <div>
-                            <label for="ii" class="block text-sm font-medium text-gray-700">I.I (%)</label>
-                            <input type="number" id="ii" value="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="ii" class="block text-sm font-medium text-gray-700 dark:text-gray-400">I.I (%)</label>
+                            <input type="number" id="ii" value="0" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                         </div>
                         <div>
-                            <label for="ipi" class="block text-sm font-medium text-gray-700">IPI (%)</label>
-                            <input type="number" id="ipi" value="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="ipi" class="block text-sm font-medium text-gray-700 dark:text-gray-400">IPI (%)</label>
+                            <input type="number" id="ipi" value="8" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                         </div>
                         <div>
-                            <label for="pisCofinsRegime" class="block text-sm font-medium text-gray-700">Regime PIS/COFINS</label>
-                            <select id="pisCofinsRegime" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="pisCofinsRegime" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Regime PIS/COFINS</label>
+                            <select id="pisCofinsRegime" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                                 <option value="real">Lucro Real</option>
                                 <option value="presumido">Lucro Presumido</option>
                             </select>
                         </div>
                         <div>
-                            <label for="icmsOrigem" class="block text-sm font-medium text-gray-700">Origem ICMS</label>
-                            <select id="icmsOrigem" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="icmsOrigem" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Origem ICMS</label>
+                            <select id="icmsOrigem" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                                 <option value="norte_nordeste_co">N/NE/CO/ES</option>
                                 <option value="sul_sudeste">S/SE</option>
                                 <option value="importados">Importados</option>
@@ -99,66 +100,66 @@
             <!-- Coluna de Resultados (Compra) -->
             <div id="compra-results-col" class="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-8 transition-all duration-300 ease-in-out">
                 <!-- Antes da Reforma -->
-                <div class="card">
-                    <h2 class="text-2xl font-bold text-center text-blue-600 mb-4">ANTES da Reforma</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-center text-blue-600 dark:text-blue-400 mb-4">ANTES da Reforma</h2>
                     <div class="space-y-3 text-base">
-                        <div class="flex justify-between items-center py-2 border-b font-medium"><span class="text-gray-800">Valor da Mercadoria</span><span class="result-value" id="compra-valor-mercadoria-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">I.I (<span id="perc-ii">0,00</span>%)</span><span class="result-value" id="res-ii">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">IPI (<span id="perc-ipi">8,00</span>%)</span><span class="result-value" id="res-ipi">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">PIS (<span id="perc-pis">1,65</span>%)</span><span class="result-value" id="res-pis">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">COFINS (<span id="perc-cofins">7,60</span>%)</span><span class="result-value" id="res-cofins">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">ICMS (<span id="perc-icms">12,00</span>%)</span><span class="result-value" id="res-icms">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 font-medium"><span class="text-gray-800 dark:text-gray-200">Valor da Mercadoria</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="compra-valor-mercadoria-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">I.I (<span id="perc-ii">0,00</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-ii">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">IPI (<span id="perc-ipi">8,00</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-ipi">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">PIS (<span id="perc-pis">1,65</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-pis">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">COFINS (<span id="perc-cofins">7,60</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-cofins">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">ICMS (<span id="perc-icms">12,00</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-icms">R$ 0,00</span></div>
                     </div>
-                    <div class="mt-6 pt-4 border-t-2 border-dashed">
-                        <div class="flex justify-between items-center text-xl"><span class="font-semibold text-gray-700">Total de Tributos</span><span class="font-bold text-blue-700" id="total-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800">Custo Total (Compra)</span><span class="font-extrabold text-blue-800" id="custo-total-antes">R$ 0,00</span></div>
+                    <div class="mt-6 pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="flex justify-between items-center text-xl"><span class="font-semibold text-gray-700 dark:text-gray-300">Total de Tributos</span><span class="font-bold text-blue-700 dark:text-blue-400" id="total-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800 dark:text-gray-200">Custo Total (Compra)</span><span class="font-extrabold text-blue-800 dark:text-blue-300" id="custo-total-antes">R$ 0,00</span></div>
                     </div>
                 </div>
                 <!-- Depois da Reforma -->
-                <div class="card">
-                    <h2 class="text-2xl font-bold text-center text-green-600 mb-4">DEPOIS da Reforma</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-center text-green-600 dark:text-green-400 mb-4">DEPOIS da Reforma</h2>
                     <div class="space-y-3 text-base">
-                        <div class="flex justify-between items-center py-2 border-b font-medium"><span class="text-gray-800">Valor da Mercadoria</span><span class="result-value" id="compra-valor-mercadoria-depois">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">IVA DUAL (CBS + IBS) (28%)</span><span class="result-value" id="res-iva">R$ 0,00</span></div>
-                        <div class="py-2 border-b h-[168px]"></div> <!-- Spacer -->
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 font-medium"><span class="text-gray-800 dark:text-gray-200">Valor da Mercadoria</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="compra-valor-mercadoria-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">IVA DUAL (CBS + IBS) (28%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="res-iva">R$ 0,00</span></div>
+                        <div class="py-2 border-b border-transparent h-[168px]"></div> <!-- Spacer -->
                     </div>
-                     <div class="mt-6 pt-4 border-t-2 border-dashed">
-                        <div class="flex justify-between items-center text-xl"><span class="font-semibold text-gray-700">Total de Tributos</span><span class="font-bold text-green-700" id="total-depois">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800">Custo Total (Compra)</span><span class="font-extrabold text-green-800" id="custo-total-depois">R$ 0,00</span></div>
+                     <div class="mt-6 pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="flex justify-between items-center text-xl"><span class="font-semibold text-gray-700 dark:text-gray-300">Total de Tributos</span><span class="font-bold text-green-700 dark:text-green-400" id="total-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800 dark:text-gray-200">Custo Total (Compra)</span><span class="font-extrabold text-green-800 dark:text-green-300" id="custo-total-depois">R$ 0,00</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="my-12 border-t-2 border-gray-300">
+        <hr class="my-12 border-t-2 border-gray-300 dark:border-gray-700">
 
         <!-- Operação de Venda -->
         <div class="mb-8">
-            <h2 class="text-3xl font-semibold text-gray-700 text-center border-b-2 border-gray-200 pb-2">Operação de Venda</h2>
+            <h2 class="section-title text-3xl font-semibold text-gray-700 dark:text-gray-300 text-center">Operação de Venda</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
              <!-- Coluna de Inputs (Venda) -->
             <div id="venda-params-col" class="md:col-span-1 transition-all duration-300 ease-in-out">
-                <div class="card">
-                    <div class="border-b pb-2">
-                        <h2 class="text-xl font-semibold text-gray-700">Parâmetros de Venda</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10">
+                    <div class="border-b pb-3 border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">Parâmetros de Venda</h2>
                     </div>
                     <div class="space-y-5 pt-4">
                         <div>
-                            <label for="lucroBruto" class="block text-sm font-medium text-gray-700">Valor Agregado (%)</label>
-                            <input type="number" id="lucroBruto" value="30" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="lucroBruto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Valor Agregado (%)</label>
+                            <input type="number" id="lucroBruto" value="30" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                         </div>
                         <div>
-                            <label for="pisCofinsRegimeVenda" class="block text-sm font-medium text-gray-700">Regime PIS/COFINS</label>
-                            <select id="pisCofinsRegimeVenda" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="pisCofinsRegimeVenda" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Regime PIS/COFINS</label>
+                            <select id="pisCofinsRegimeVenda" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                                 <option value="real">Lucro Real</option>
                                 <option value="presumido">Lucro Presumido</option>
                             </select>
                         </div>
                         <div>
-                            <label for="icmsVenda" class="block text-sm font-medium text-gray-700">ICMS a ser destacado na NF (%)</label>
-                             <select id="icmsVenda" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <label for="icmsVenda" class="block text-sm font-medium text-gray-700 dark:text-gray-400">ICMS a ser destacado na NF (%)</label>
+                             <select id="icmsVenda" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300">
                                 <option value="7">7%</option>
                                 <option value="12">12%</option>
                                 <option value="18" selected>18%</option>
@@ -171,96 +172,96 @@
              <!-- Coluna de Resultados (Venda) -->
             <div id="venda-results-col" class="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-8 transition-all duration-300 ease-in-out">
                 <!-- Venda Antes da Reforma -->
-                <div class="card">
-                    <h2 class="text-2xl font-bold text-center text-blue-600 mb-4">ANTES da Reforma</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-center text-blue-600 dark:text-blue-400 mb-4">ANTES da Reforma</h2>
                     <div class="space-y-3 text-base">
-                        <div class="flex justify-between items-center py-2 border-b font-medium"><span class="text-gray-800">Valor da Mercadoria</span><span class="result-value" id="venda-valor-mercadoria-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">Preço de Venda (Custo)</span><span class="result-value" id="venda-preco-custo-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">Valor Agregado (<span id="venda-perc-lucro-antes">30</span>%)</span><span class="result-value" id="venda-lucro-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b font-medium"><span class="text-gray-800">Preço Antes ICMS</span><span class="result-value" id="venda-base-icms-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">ICMS Destacado (<span id="venda-perc-icms-antes">18</span>%)</span><span class="result-value" id="venda-icms-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">PIS (<span id="venda-perc-pis-antes">1,65</span>%)</span><span class="result-value" id="venda-pis-antes">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">COFINS (<span id="venda-perc-cofins-antes">7,60</span>%)</span><span class="result-value" id="venda-cofins-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 font-medium"><span class="text-gray-800 dark:text-gray-200">Valor da Mercadoria</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-valor-mercadoria-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">Preço de Venda (Custo)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-preco-custo-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">Valor Agregado (<span id="venda-perc-lucro-antes">30</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-lucro-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 font-medium"><span class="text-gray-800 dark:text-gray-200">Preço Antes ICMS</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-base-icms-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">ICMS Destacado (<span id="venda-perc-icms-antes">18</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-icms-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">PIS (<span id="venda-perc-pis-antes">1,65</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-pis-antes">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">COFINS (<span id="venda-perc-cofins-antes">7,60</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-cofins-antes">R$ 0,00</span></div>
                     </div>
-                    <div class="mt-6 pt-4 border-t-2 border-dashed">
-                        <div class="flex justify-between items-center text-lg mb-2"><span class="font-semibold text-gray-700">Preço com ICMS (B.C)</span><span class="font-bold text-gray-800" id="venda-preco-com-icms-bc">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800">Preço Final (Venda)</span><span class="font-extrabold text-blue-800" id="venda-total-antes">R$ 0,00</span></div>
+                    <div class="mt-6 pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="flex justify-between items-center text-lg mb-2"><span class="font-semibold text-gray-700 dark:text-gray-300">Preço com ICMS (B.C)</span><span class="font-bold text-gray-800 dark:text-gray-100" id="venda-preco-com-icms-bc">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800 dark:text-gray-200">Preço Final (Venda)</span><span class="font-extrabold text-blue-800 dark:text-blue-300" id="venda-total-antes">R$ 0,00</span></div>
                     </div>
                 </div>
                  <!-- Venda Depois da Reforma -->
-                <div class="card">
-                    <h2 class="text-2xl font-bold text-center text-green-600 mb-4">DEPOIS da Reforma</h2>
+                <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-center text-green-600 dark:text-green-400 mb-4">DEPOIS da Reforma</h2>
                     <div class="space-y-3 text-base">
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">Preço de Venda (Base)</span><span class="result-value" id="venda-preco-custo-depois">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">Valor Agregado (<span id="venda-perc-lucro-depois">30</span>%)</span><span class="result-value" id="venda-lucro-depois">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b font-medium"><span class="text-gray-800">Preço Antes IVA</span><span class="result-value" id="venda-base-iva-depois">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center py-2 border-b"><span class="text-gray-600">IVA DUAL (28%)</span><span class="result-value" id="venda-iva-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">Preço de Venda (Base)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-preco-custo-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">Valor Agregado (<span id="venda-perc-lucro-depois">30</span>%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-lucro-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 font-medium"><span class="text-gray-800 dark:text-gray-200">Preço Antes IVA</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-base-iva-depois">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"><span class="text-gray-600 dark:text-gray-400">IVA DUAL (28%)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="venda-iva-depois">R$ 0,00</span></div>
                         <div class="h-32"></div> <!-- Espaçador para alinhamento -->
                     </div>
-                    <div class="mt-6 pt-4 border-t-2 border-dashed">
-                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800">Preço Final (Venda)</span><span class="font-extrabold text-green-800" id="venda-total-depois">R$ 0,00</span></div>
+                    <div class="mt-6 pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="flex justify-between items-center text-2xl mt-2"><span class="font-bold text-gray-800 dark:text-gray-200">Preço Final (Venda)</span><span class="font-extrabold text-green-800 dark:text-green-300" id="venda-total-depois">R$ 0,00</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="my-12 border-t-2 border-gray-300">
+        <hr class="my-12 border-t-2 border-gray-300 dark:border-gray-700">
         
         <!-- Apuração -->
         <div class="mb-8">
-            <h2 class="text-3xl font-semibold text-gray-700 text-center border-b-2 border-gray-200 pb-2">Apuração - Vendas</h2>
+            <h2 class="section-title text-3xl font-semibold text-gray-700 dark:text-gray-300 text-center">Apuração - Vendas</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Apuração Antes da Reforma -->
-            <div class="card">
-                <div class="card-content">
-                     <h2 class="text-2xl font-bold text-center text-blue-600 mb-4">ANTES da Reforma</h2>
+            <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                <div class="card-content flex-grow">
+                     <h2 class="text-2xl font-bold text-center text-blue-600 dark:text-blue-400 mb-4">ANTES da Reforma</h2>
                      <!-- ICMS -->
-                     <h3 class="apuracao-title">ICMS</h3>
+                     <h3 class="text-lg font-bold text-gray-600 mt-4 mb-2 pb-2 border-b-2 border-gray-200 dark:text-gray-400 dark:border-gray-700">ICMS</h3>
                      <div class="space-y-2 text-base">
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Débito (Venda)</span><span class="result-value" id="apuracao-icms-debito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Crédito (Compra)</span><span class="result-value" id="apuracao-icms-credito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center pt-2 mt-2 border-t font-bold text-lg"><span class="text-gray-800">Imposto a Recolher</span><span class="result-value text-blue-700" id="apuracao-icms-recolher">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Débito (Venda)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-icms-debito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Crédito (Compra)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-icms-credito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-600 font-bold text-lg"><span class="text-gray-800 dark:text-gray-200">Imposto a Recolher</span><span class="font-semibold text-blue-700 dark:text-blue-400" id="apuracao-icms-recolher">R$ 0,00</span></div>
                      </div>
                      <!-- PIS -->
-                     <h3 class="apuracao-title">PIS</h3>
+                     <h3 class="text-lg font-bold text-gray-600 mt-4 mb-2 pb-2 border-b-2 border-gray-200 dark:text-gray-400 dark:border-gray-700">PIS</h3>
                      <div class="space-y-2 text-base">
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Débito (Venda)</span><span class="result-value" id="apuracao-pis-debito">R$ 0,00</span></div>
-                        <div id="apuracao-pis-credito-row" class="flex justify-between items-center"><span class="text-gray-600">Crédito (Compra)</span><span class="result-value" id="apuracao-pis-credito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center pt-2 mt-2 border-t font-bold text-lg"><span class="text-gray-800">Contribuição a Recolher</span><span class="result-value text-blue-700" id="apuracao-pis-recolher">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Débito (Venda)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-pis-debito">R$ 0,00</span></div>
+                        <div id="apuracao-pis-credito-row" class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Crédito (Compra)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-pis-credito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-600 font-bold text-lg"><span class="text-gray-800 dark:text-gray-200">Contribuição a Recolher</span><span class="font-semibold text-blue-700 dark:text-blue-400" id="apuracao-pis-recolher">R$ 0,00</span></div>
                      </div>
                      <!-- COFINS -->
-                     <h3 class="apuracao-title">COFINS</h3>
+                     <h3 class="text-lg font-bold text-gray-600 mt-4 mb-2 pb-2 border-b-2 border-gray-200 dark:text-gray-400 dark:border-gray-700">COFINS</h3>
                      <div class="space-y-2 text-base">
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Débito (Venda)</span><span class="result-value" id="apuracao-cofins-debito">R$ 0,00</span></div>
-                        <div id="apuracao-cofins-credito-row" class="flex justify-between items-center"><span class="text-gray-600">Crédito (Compra)</span><span class="result-value" id="apuracao-cofins-credito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center pt-2 mt-2 border-t font-bold text-lg"><span class="text-gray-800">Contribuição a Recolher</span><span class="result-value text-blue-700" id="apuracao-cofins-recolher">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Débito (Venda)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-cofins-debito">R$ 0,00</span></div>
+                        <div id="apuracao-cofins-credito-row" class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Crédito (Compra)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-cofins-credito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-600 font-bold text-lg"><span class="text-gray-800 dark:text-gray-200">Contribuição a Recolher</span><span class="font-semibold text-blue-700 dark:text-blue-400" id="apuracao-cofins-recolher">R$ 0,00</span></div>
                      </div>
                 </div>
-                <div class="mt-6 pt-4 border-t-4 border-double border-blue-200 bg-blue-50 p-4 rounded-lg">
+                <div class="mt-auto pt-4 border-t-4 border-double border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                     <div class="flex justify-between items-center text-2xl">
-                        <span class="font-bold text-blue-900">Carga Tributária Total</span>
-                        <span class="font-extrabold text-blue-900" id="carga-total-antes">R$ 0,00</span>
+                        <span class="font-bold text-blue-900 dark:text-blue-300">Carga Tributária Total</span>
+                        <span class="font-extrabold text-blue-900 dark:text-blue-300" id="carga-total-antes">R$ 0,00</span>
                     </div>
                 </div>
             </div>
             <!-- Apuração Depois da Reforma -->
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="text-2xl font-bold text-center text-green-600 mb-4">DEPOIS da Reforma</h2>
+            <div class="p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 ease-in-out flex flex-col dark:border dark:border-white/10 hover:shadow-xl hover:-translate-y-1">
+                <div class="card-content flex-grow">
+                    <h2 class="text-2xl font-bold text-center text-green-600 dark:text-green-400 mb-4">DEPOIS da Reforma</h2>
                     <!-- IVA-DUAL -->
-                    <h3 class="apuracao-title">IVA-DUAL (IBS + CBS)</h3>
+                    <h3 class="text-lg font-bold text-gray-600 mt-4 mb-2 pb-2 border-b-2 border-gray-200 dark:text-gray-400 dark:border-gray-700">IVA-DUAL (IBS + CBS)</h3>
                     <div class="space-y-2 text-base">
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Débito (Venda)</span><span class="result-value" id="apuracao-iva-debito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center"><span class="text-gray-600">Crédito (Compra)</span><span class="result-value" id="apuracao-iva-credito">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center pt-2 mt-2 border-t font-bold text-lg"><span class="text-gray-800">Imposto a Recolher</span><span class="result-value text-green-700" id="apuracao-iva-recolher">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Débito (Venda)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-iva-debito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center"><span class="text-gray-600 dark:text-gray-400">Crédito (Compra)</span><span class="font-semibold text-gray-800 dark:text-gray-100" id="apuracao-iva-credito">R$ 0,00</span></div>
+                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-600 font-bold text-lg"><span class="text-gray-800 dark:text-gray-200">Imposto a Recolher</span><span class="font-semibold text-green-700 dark:text-green-400" id="apuracao-iva-recolher">R$ 0,00</span></div>
                      </div>
                 </div>
-                <div class="mt-6 pt-4 border-t-4 border-double border-green-200 bg-green-50 p-4 rounded-lg">
+                <div class="mt-auto pt-4 border-t-4 border-double border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                     <div class="flex justify-between items-center text-2xl">
-                        <span class="font-bold text-green-900">Carga Tributária Total</span>
-                        <span class="font-extrabold text-green-900" id="carga-total-depois">R$ 0,00</span>
+                        <span class="font-bold text-green-900 dark:text-green-300">Carga Tributária Total</span>
+                        <span class="font-extrabold text-green-900 dark:text-green-300" id="carga-total-depois">R$ 0,00</span>
                     </div>
                 </div>
             </div>
@@ -268,275 +269,66 @@
 
     </main>
 
+
+
 <script>
-    // --- ELEMENTOS DE INPUT ---
-    const valorBaseInput = document.getElementById('valorBase');
-    const iiInput = document.getElementById('ii');
-    const ipiInput = document.getElementById('ipi');
-    const pisCofinsRegimeSelect = document.getElementById('pisCofinsRegime');
-    const icmsOrigemSelect = document.getElementById('icmsOrigem');
-    const lucroBrutoInput = document.getElementById('lucroBruto');
-    const pisCofinsRegimeVendaSelect = document.getElementById('pisCofinsRegimeVenda');
-    const icmsVendaSelect = document.getElementById('icmsVenda');
+(function() {
+  var root = document.documentElement;
+  var storageKey = 'color-theme';
+  var btn = document.getElementById('theme-toggle');
+  var sun = document.getElementById('theme-toggle-sun');
+  var moon = document.getElementById('theme-toggle-moon');
 
-    // --- ELEMENTOS DE RESULTADO (COMPRA) ---
-    const compraValorMercadoriaAntes = document.getElementById('compra-valor-mercadoria-antes');
-    const compraValorMercadoriaDepois = document.getElementById('compra-valor-mercadoria-depois');
-    const resIi = document.getElementById('res-ii');
-    const resIpi = document.getElementById('res-ipi');
-    const resPis = document.getElementById('res-pis');
-    const resCofins = document.getElementById('res-cofins');
-    const resIcms = document.getElementById('res-icms');
-    const resIva = document.getElementById('res-iva');
-    const totalAntes = document.getElementById('total-antes');
-    const custoTotalAntesEl = document.getElementById('custo-total-antes');
-    const totalDepois = document.getElementById('total-depois');
-    const custoTotalDepoisEl = document.getElementById('custo-total-depois');
-    const percIi = document.getElementById('perc-ii');
-    const percIpi = document.getElementById('perc-ipi');
-    const percPis = document.getElementById('perc-pis');
-    const percCofins = document.getElementById('perc-cofins');
-    const percIcms = document.getElementById('perc-icms');
+  function isSystemDark() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
 
-    // --- ELEMENTOS DE RESULTADO (VENDA) ---
-    const vendaValorMercadoriaAntes = document.getElementById('venda-valor-mercadoria-antes');
-    const vendaPrecoCustoAntes = document.getElementById('venda-preco-custo-antes');
-    const vendaPercLucroAntes = document.getElementById('venda-perc-lucro-antes');
-    const vendaLucroAntes = document.getElementById('venda-lucro-antes');
-    const vendaBaseIcmsAntes = document.getElementById('venda-base-icms-antes');
-    const vendaPercIcmsAntes = document.getElementById('venda-perc-icms-antes');
-    const vendaIcmsAntes = document.getElementById('venda-icms-antes');
-    const vendaPisAntes = document.getElementById('venda-pis-antes');
-    const vendaPercPisAntes = document.getElementById('venda-perc-pis-antes');
-    const vendaCofinsAntes = document.getElementById('venda-cofins-antes');
-    const vendaPercCofinsAntes = document.getElementById('venda-perc-cofins-antes');
-    const vendaPrecoComIcmsBc = document.getElementById('venda-preco-com-icms-bc');
-    const vendaTotalAntes = document.getElementById('venda-total-antes');
-    
-    const vendaPrecoCustoDepois = document.getElementById('venda-preco-custo-depois');
-    const vendaPercLucroDepois = document.getElementById('venda-perc-lucro-depois');
-    const vendaLucroDepois = document.getElementById('venda-lucro-depois');
-    const vendaBaseIvaDepois = document.getElementById('venda-base-iva-depois');
-    const vendaIvaDepois = document.getElementById('venda-iva-depois');
-    const vendaTotalDepois = document.getElementById('venda-total-depois');
+  function current() {
+    var saved = localStorage.getItem(storageKey);
+    if (saved === 'dark') return 'dark';
+    if (saved === 'light') return 'light';
+    return isSystemDark() ? 'dark' : 'light';
+  }
 
-    // --- ELEMENTOS DE RESULTADO (APURAÇÃO) ---
-    const apuracaoIcmsDebito = document.getElementById('apuracao-icms-debito');
-    const apuracaoIcmsCredito = document.getElementById('apuracao-icms-credito');
-    const apuracaoIcmsRecolher = document.getElementById('apuracao-icms-recolher');
-    const apuracaoPisDebito = document.getElementById('apuracao-pis-debito');
-    const apuracaoPisCredito = document.getElementById('apuracao-pis-credito');
-    const apuracaoPisCreditoRow = document.getElementById('apuracao-pis-credito-row');
-    const apuracaoPisRecolher = document.getElementById('apuracao-pis-recolher');
-    const apuracaoCofinsDebito = document.getElementById('apuracao-cofins-debito');
-    const apuracaoCofinsCredito = document.getElementById('apuracao-cofins-credito');
-    const apuracaoCofinsCreditoRow = document.getElementById('apuracao-cofins-credito-row');
-    const apuracaoCofinsRecolher = document.getElementById('apuracao-cofins-recolher');
-    const apuracaoIvaDebito = document.getElementById('apuracao-iva-debito');
-    const apuracaoIvaCredito = document.getElementById('apuracao-iva-credito');
-    const apuracaoIvaRecolher = document.getElementById('apuracao-iva-recolher');
-    const cargaTotalAntesEl = document.getElementById('carga-total-antes');
-    const cargaTotalDepoisEl = document.getElementById('carga-total-depois');
-
-
-    // --- ELEMENTOS DE TOGGLE ---
-    const toggleBtn = document.getElementById('toggle-params-button');
-    const toggleBtnText = document.getElementById('toggle-params-text');
-    const toggleBtnIcon = document.getElementById('toggle-params-icon-path');
-
-    const compraParamsCol = document.getElementById('compra-params-col');
-    const compraResultsCol = document.getElementById('compra-results-col');
-    const vendaParamsCol = document.getElementById('venda-params-col');
-    const vendaResultsCol = document.getElementById('venda-results-col');
-
-    const aliquotas = {
-        pis: { real: 1.65, presumido: 0.65 },
-        cofins: { real: 7.60, presumido: 3.00 },
-        icms: { norte_nordeste_co: 12.00, sul_sudeste: 7.00, importados: 4.00 },
-        iva: 28.00
-    };
-
-    function formatCurrency(value) {
-        const options = { style: 'currency', currency: 'BRL' };
-        if (value < 0) {
-            return `(${Math.abs(value).toLocaleString('pt-BR', options)})`;
-        }
-        return value.toLocaleString('pt-BR', options);
+  
+function apply(theme) {
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
     }
-
-    function calcular() {
-        // --- LEITURA DOS INPUTS ---
-        const valorBaseString = valorBaseInput.value || '0,00';
-        const valorBase = parseFloat(valorBaseString.replace(/\./g, '').replace(',', '.')) || 0;
-        const percII = parseFloat(iiInput.value) || 0;
-        const percIPI = parseFloat(ipiInput.value) || 0;
-        const regime = pisCofinsRegimeSelect.value;
-        const icmsOrigem = icmsOrigemSelect.value;
-        const percValorAgregado = parseFloat(lucroBrutoInput.value) || 0;
-        const percIcmsVenda = parseFloat(icmsVendaSelect.value) || 0;
-        const regimeVenda = pisCofinsRegimeVendaSelect.value;
-        
-        const valorBaseFormatado = formatCurrency(valorBase);
-        compraValorMercadoriaAntes.textContent = valorBaseFormatado;
-        compraValorMercadoriaDepois.textContent = valorBaseFormatado;
-        vendaValorMercadoriaAntes.textContent = valorBaseFormatado;
-
-        // --- CÁLCULOS OPERAÇÃO DE COMPRA ---
-        const valorII = (valorBase * percII) / 100;
-        const valorIPI = (valorBase * percIPI) / 100;
-        const percPisAtual = aliquotas.pis[regime];
-        const percCofinsAtual = aliquotas.cofins[regime];
-        const valorPIS = (valorBase * percPisAtual) / 100;
-        const valorCOFINS = (valorBase * percCofinsAtual) / 100;
-        const percIcmsAtual = aliquotas.icms[icmsOrigem];
-        const valorICMS = (valorBase * percIcmsAtual) / 100;
-        const totalTributosAntes = valorII + valorIPI + valorPIS + valorCOFINS + valorICMS;
-        const custoFinalAntes = valorBase + totalTributosAntes;
-        
-        percIi.textContent = percII.toFixed(2).replace('.', ',');
-        resIi.textContent = formatCurrency(valorII);
-        percIpi.textContent = percIPI.toFixed(2).replace('.', ',');
-        resIpi.textContent = formatCurrency(valorIPI);
-        percPis.textContent = percPisAtual.toFixed(2).replace('.', ',');
-        resPis.textContent = formatCurrency(valorPIS);
-        percCofins.textContent = percCofinsAtual.toFixed(2).replace('.', ',');
-        resCofins.textContent = formatCurrency(valorCOFINS);
-        percIcms.textContent = percIcmsAtual.toFixed(2).replace('.', ',');
-        resIcms.textContent = formatCurrency(valorICMS);
-        totalAntes.textContent = formatCurrency(totalTributosAntes);
-        custoTotalAntesEl.textContent = formatCurrency(custoFinalAntes);
-
-        const valorIVA = (valorBase * aliquotas.iva) / 100;
-        const custoFinalDepois = valorBase + valorIVA;
-        
-        resIva.textContent = formatCurrency(valorIVA);
-        totalDepois.textContent = formatCurrency(valorIVA);
-        custoTotalDepoisEl.textContent = formatCurrency(custoFinalDepois);
-
-        // --- CÁLCULOS OPERAÇÃO DE VENDA ---
-        const valorAgregadoAntes = custoFinalAntes * (percValorAgregado / 100);
-        const precoAntesIcms = custoFinalAntes + valorAgregadoAntes;
-        const fatorIcms = 1 - (percIcmsVenda / 100);
-        const precoComIcms = precoAntesIcms / fatorIcms;
-        const valorIcmsVenda = precoComIcms * (percIcmsVenda / 100);
-        
-        const percPisVenda = aliquotas.pis[regimeVenda];
-        const percCofinsVenda = aliquotas.cofins[regimeVenda];
-        const valorPisVenda = precoAntesIcms * (percPisVenda / 100);
-        const valorCofinsVenda = precoAntesIcms * (percCofinsVenda / 100);
-        const precoFinalVendaAntes = precoComIcms + valorPisVenda + valorCofinsVenda;
-
-        vendaPrecoCustoAntes.textContent = formatCurrency(custoFinalAntes);
-        vendaPercLucroAntes.textContent = percValorAgregado;
-        vendaLucroAntes.textContent = formatCurrency(valorAgregadoAntes);
-        vendaBaseIcmsAntes.textContent = formatCurrency(precoAntesIcms);
-        vendaPercIcmsAntes.textContent = percIcmsVenda;
-        vendaIcmsAntes.textContent = formatCurrency(valorIcmsVenda);
-        vendaPercPisAntes.textContent = percPisVenda.toFixed(2).replace('.', ',');
-        vendaPisAntes.textContent = formatCurrency(valorPisVenda);
-        vendaPercCofinsAntes.textContent = percCofinsVenda.toFixed(2).replace('.', ',');
-        vendaCofinsAntes.textContent = formatCurrency(valorCofinsVenda);
-        vendaPrecoComIcmsBc.textContent = formatCurrency(precoComIcms);
-        vendaTotalAntes.textContent = formatCurrency(precoFinalVendaAntes);
-
-        const valorAgregadoDepois = valorBase * (percValorAgregado / 100);
-        const precoAntesIva = valorBase + valorAgregadoDepois;
-        const valorIvaVenda = precoAntesIva * (aliquotas.iva / 100);
-        const precoFinalVendaDepois = precoAntesIva + valorIvaVenda;
-
-        vendaPrecoCustoDepois.textContent = formatCurrency(valorBase);
-        vendaPercLucroDepois.textContent = percValorAgregado;
-        vendaLucroDepois.textContent = formatCurrency(valorAgregadoDepois);
-        vendaBaseIvaDepois.textContent = formatCurrency(precoAntesIva);
-        vendaIvaDepois.textContent = formatCurrency(valorIvaVenda);
-        vendaTotalDepois.textContent = formatCurrency(precoFinalVendaDepois);
-
-        // --- CÁLCULOS APURAÇÃO ---
-        const icmsRecolher = valorIcmsVenda - valorICMS;
-        const ivaRecolher = valorIvaVenda - valorIVA;
-        let pisRecolher;
-        let cofinsRecolher;
-
-        if (regimeVenda === 'presumido') {
-            apuracaoPisCreditoRow.style.display = 'none';
-            apuracaoCofinsCreditoRow.style.display = 'none';
-            pisRecolher = valorPisVenda;
-            cofinsRecolher = valorCofinsVenda;
-        } else { // Lucro Real
-            apuracaoPisCreditoRow.style.display = 'flex';
-            apuracaoCofinsCreditoRow.style.display = 'flex';
-            pisRecolher = valorPisVenda - valorPIS;
-            cofinsRecolher = valorCofinsVenda - valorCOFINS;
-        }
-
-        apuracaoIcmsDebito.textContent = formatCurrency(valorIcmsVenda);
-        apuracaoIcmsCredito.textContent = formatCurrency(valorICMS);
-        apuracaoIcmsRecolher.textContent = formatCurrency(icmsRecolher);
-        
-        apuracaoPisDebito.textContent = formatCurrency(valorPisVenda);
-        apuracaoPisCredito.textContent = formatCurrency(valorPIS);
-        apuracaoPisRecolher.textContent = formatCurrency(pisRecolher);
-
-        apuracaoCofinsDebito.textContent = formatCurrency(valorCofinsVenda);
-        apuracaoCofinsCredito.textContent = formatCurrency(valorCOFINS);
-        apuracaoCofinsRecolher.textContent = formatCurrency(cofinsRecolher);
-        
-        apuracaoIvaDebito.textContent = formatCurrency(valorIvaVenda);
-        apuracaoIvaCredito.textContent = formatCurrency(valorIVA);
-        apuracaoIvaRecolher.textContent = formatCurrency(ivaRecolher);
-
-        // --- CÁLCULO CARGA TRIBUTÁRIA TOTAL ---
-        const cargaTotalAntes = icmsRecolher + pisRecolher + cofinsRecolher;
-        const cargaTotalDepois = ivaRecolher;
-
-        cargaTotalAntesEl.textContent = formatCurrency(cargaTotalAntes);
-        cargaTotalDepoisEl.textContent = formatCurrency(cargaTotalDepois);
+    if (sun && moon) {
+      // Show icon representing the *current* theme
+      // Light -> show SUN; Dark -> show MOON
+      sun.classList.toggle('hidden', theme === 'dark');
+      moon.classList.toggle('hidden', theme !== 'dark');
     }
+  }
 
-    valorBaseInput.addEventListener('input', (e) => {
-        const input = e.target;
-        let value = input.value.replace(/\D/g, '');
-        if (value) {
-            const numberValue = parseInt(value, 10) / 100;
-            input.value = numberValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        } else { input.value = ''; }
-        calcular();
+  // Initialize at first paint (no flash)
+  apply(current());
+
+  // React to system changes if user never set a preference
+  try {
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+        var saved = localStorage.getItem(storageKey);
+        if (!saved) apply(current());
+      });
+    }
+  } catch(e) {}
+
+  if (btn) {
+    btn.addEventListener('click', function() {
+      var now = current();
+      var next = (now === 'dark') ? 'light' : 'dark';
+      localStorage.setItem(storageKey, next);
+      apply(next);
     });
-
-    const allInputs = [iiInput, ipiInput, pisCofinsRegimeSelect, icmsOrigemSelect, lucroBrutoInput, icmsVendaSelect, pisCofinsRegimeVendaSelect];
-    allInputs.forEach(element => {
-        element.addEventListener('input', calcular);
-    });
-    
-    // --- LÓGICA DE TOGGLE LATERAL ---
-    const iconPaths = {
-        hide: "M15.75 19.5L8.25 12l7.5-7.5", // Chevron Left
-        show: "M8.25 4.5l7.5 7.5-7.5 7.5"   // Chevron Right
-    };
-
-    toggleBtn.addEventListener('click', () => {
-        const isHidden = compraParamsCol.classList.contains('hidden');
-        
-        compraParamsCol.classList.toggle('hidden');
-        vendaParamsCol.classList.toggle('hidden');
-
-        compraResultsCol.classList.toggle('md:col-span-3');
-        compraResultsCol.classList.toggle('md:col-span-4');
-        vendaResultsCol.classList.toggle('md:col-span-3');
-        vendaResultsCol.classList.toggle('md:col-span-4');
-        
-        if (isHidden) { 
-            toggleBtnText.textContent = 'Ocultar Parâmetros';
-            toggleBtnIcon.setAttribute('d', iconPaths.hide);
-        } else { 
-            toggleBtnText.textContent = 'Mostrar Parâmetros';
-            toggleBtnIcon.setAttribute('d', iconPaths.show);
-        }
-    });
-
-    window.addEventListener('load', calcular);
-
+  }
+})();
 </script>
+
 </body>
 </html>
 
