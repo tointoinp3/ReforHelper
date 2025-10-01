@@ -69,7 +69,7 @@
                     <div class="space-y-5 pt-4">
                         <div>
                             <label for="valorBase" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Valor da Mercadoria (R$)</label>
-                            <input type="text" id="valorBase" placeholder="0,00" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right transition-colors duration-300">
+                            <input type="text" id="valorBase" placeholder="0,00" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right transition-colors duration-300" value="0,00">
                         </div>
                         <div>
                             <label for="ii" class="block text-sm font-medium text-gray-700 dark:text-gray-400">I.I (%)</label>
@@ -269,66 +269,308 @@
 
     </main>
 
-
-
 <script>
-(function() {
-  var root = document.documentElement;
-  var storageKey = 'color-theme';
-  var btn = document.getElementById('theme-toggle');
-  var sun = document.getElementById('theme-toggle-sun');
-  var moon = document.getElementById('theme-toggle-moon');
+    // --- ELEMENTOS DE INPUT ---
+    const valorBaseInput = document.getElementById('valorBase');
+    const iiInput = document.getElementById('ii');
+    const ipiInput = document.getElementById('ipi');
+    const pisCofinsRegimeSelect = document.getElementById('pisCofinsRegime');
+    const icmsOrigemSelect = document.getElementById('icmsOrigem');
+    const lucroBrutoInput = document.getElementById('lucroBruto');
+    const pisCofinsRegimeVendaSelect = document.getElementById('pisCofinsRegimeVenda');
+    const icmsVendaSelect = document.getElementById('icmsVenda');
 
-  function isSystemDark() {
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
+    // --- ELEMENTOS DE RESULTADO (COMPRA) ---
+    const compraValorMercadoriaAntes = document.getElementById('compra-valor-mercadoria-antes');
+    const compraValorMercadoriaDepois = document.getElementById('compra-valor-mercadoria-depois');
+    const resIi = document.getElementById('res-ii');
+    const resIpi = document.getElementById('res-ipi');
+    const resPis = document.getElementById('res-pis');
+    const resCofins = document.getElementById('res-cofins');
+    const resIcms = document.getElementById('res-icms');
+    const resIva = document.getElementById('res-iva');
+    const totalAntes = document.getElementById('total-antes');
+    const custoTotalAntesEl = document.getElementById('custo-total-antes');
+    const totalDepois = document.getElementById('total-depois');
+    const custoTotalDepoisEl = document.getElementById('custo-total-depois');
+    const percIi = document.getElementById('perc-ii');
+    const percIpi = document.getElementById('perc-ipi');
+    const percPis = document.getElementById('perc-pis');
+    const percCofins = document.getElementById('perc-cofins');
+    const percIcms = document.getElementById('perc-icms');
 
-  function current() {
-    var saved = localStorage.getItem(storageKey);
-    if (saved === 'dark') return 'dark';
-    if (saved === 'light') return 'light';
-    return isSystemDark() ? 'dark' : 'light';
-  }
+    // --- ELEMENTOS DE RESULTADO (VENDA) ---
+    const vendaValorMercadoriaAntes = document.getElementById('venda-valor-mercadoria-antes');
+    const vendaPrecoCustoAntes = document.getElementById('venda-preco-custo-antes');
+    const vendaPercLucroAntes = document.getElementById('venda-perc-lucro-antes');
+    const vendaLucroAntes = document.getElementById('venda-lucro-antes');
+    const vendaBaseIcmsAntes = document.getElementById('venda-base-icms-antes');
+    const vendaPercIcmsAntes = document.getElementById('venda-perc-icms-antes');
+    const vendaIcmsAntes = document.getElementById('venda-icms-antes');
+    const vendaPisAntes = document.getElementById('venda-pis-antes');
+    const vendaPercPisAntes = document.getElementById('venda-perc-pis-antes');
+    const vendaCofinsAntes = document.getElementById('venda-cofins-antes');
+    const vendaPercCofinsAntes = document.getElementById('venda-perc-cofins-antes');
+    const vendaPrecoComIcmsBc = document.getElementById('venda-preco-com-icms-bc');
+    const vendaTotalAntes = document.getElementById('venda-total-antes');
+    
+    const vendaPrecoCustoDepois = document.getElementById('venda-preco-custo-depois');
+    const vendaPercLucroDepois = document.getElementById('venda-perc-lucro-depois');
+    const vendaLucroDepois = document.getElementById('venda-lucro-depois');
+    const vendaBaseIvaDepois = document.getElementById('venda-base-iva-depois');
+    const vendaIvaDepois = document.getElementById('venda-iva-depois');
+    const vendaTotalDepois = document.getElementById('venda-total-depois');
 
-  
-function apply(theme) {
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+    // --- ELEMENTOS DE RESULTADO (APURAÇÃO) ---
+    const apuracaoIcmsDebito = document.getElementById('apuracao-icms-debito');
+    const apuracaoIcmsCredito = document.getElementById('apuracao-icms-credito');
+    const apuracaoIcmsRecolher = document.getElementById('apuracao-icms-recolher');
+    const apuracaoPisDebito = document.getElementById('apuracao-pis-debito');
+    const apuracaoPisCredito = document.getElementById('apuracao-pis-credito');
+    const apuracaoPisCreditoRow = document.getElementById('apuracao-pis-credito-row');
+    const apuracaoPisRecolher = document.getElementById('apuracao-pis-recolher');
+    const apuracaoCofinsDebito = document.getElementById('apuracao-cofins-debito');
+    const apuracaoCofinsCredito = document.getElementById('apuracao-cofins-credito');
+    const apuracaoCofinsCreditoRow = document.getElementById('apuracao-cofins-credito-row');
+    const apuracaoCofinsRecolher = document.getElementById('apuracao-cofins-recolher');
+    const apuracaoIvaDebito = document.getElementById('apuracao-iva-debito');
+    const apuracaoIvaCredito = document.getElementById('apuracao-iva-credito');
+    const apuracaoIvaRecolher = document.getElementById('apuracao-iva-recolher');
+    const cargaTotalAntesEl = document.getElementById('carga-total-antes');
+    const cargaTotalDepoisEl = document.getElementById('carga-total-depois');
+
+
+    // --- ELEMENTOS DE TOGGLE ---
+    const toggleBtn = document.getElementById('toggle-params-button');
+    const toggleBtnText = document.getElementById('toggle-params-text');
+    const toggleBtnIcon = document.getElementById('toggle-params-icon-path');
+
+    const compraParamsCol = document.getElementById('compra-params-col');
+    const compraResultsCol = document.getElementById('compra-results-col');
+    const vendaParamsCol = document.getElementById('venda-params-col');
+    const vendaResultsCol = document.getElementById('venda-results-col');
+
+    const aliquotas = {
+        pis: { real: 1.65, presumido: 0.65 },
+        cofins: { real: 7.60, presumido: 3.00 },
+        icms: { norte_nordeste_co: 12.00, sul_sudeste: 7.00, importados: 4.00 },
+        iva: 28.00
+    };
+
+    function formatCurrency(value) {
+        const options = { style: 'currency', currency: 'BRL' };
+        if (value < 0) {
+            return `(${Math.abs(value).toLocaleString('pt-BR', options)})`;
+        }
+        return value.toLocaleString('pt-BR', options);
     }
-    if (sun && moon) {
-      // Show icon representing the *current* theme
-      // Light -> show SUN; Dark -> show MOON
-      sun.classList.toggle('hidden', theme === 'dark');
-      moon.classList.toggle('hidden', theme !== 'dark');
+
+    function calcular() {
+        // --- LEITURA DOS INPUTS ---
+        const valorBaseString = valorBaseInput.value || '0,00';
+        const valorBase = parseFloat(valorBaseString.replace(/\./g, '').replace(',', '.')) || 0;
+        const percII = parseFloat(iiInput.value) || 0;
+        const percIPI = parseFloat(ipiInput.value) || 0;
+        const regime = pisCofinsRegimeSelect.value;
+        const icmsOrigem = icmsOrigemSelect.value;
+        const percValorAgregado = parseFloat(lucroBrutoInput.value) || 0;
+        const percIcmsVenda = parseFloat(icmsVendaSelect.value) || 0;
+        const regimeVenda = pisCofinsRegimeVendaSelect.value;
+        
+        const valorBaseFormatado = formatCurrency(valorBase);
+        compraValorMercadoriaAntes.textContent = valorBaseFormatado;
+        compraValorMercadoriaDepois.textContent = valorBaseFormatado;
+        vendaValorMercadoriaAntes.textContent = valorBaseFormatado;
+
+        // --- CÁLCULOS OPERAÇÃO DE COMPRA ---
+        const valorII = (valorBase * percII) / 100;
+        const valorIPI = (valorBase * percIPI) / 100;
+        const percPisAtual = aliquotas.pis[regime];
+        const percCofinsAtual = aliquotas.cofins[regime];
+        const valorPIS = (valorBase * percPisAtual) / 100;
+        const valorCOFINS = (valorBase * percCofinsAtual) / 100;
+        const percIcmsAtual = aliquotas.icms[icmsOrigem];
+        const valorICMS = (valorBase * percIcmsAtual) / 100;
+        const totalTributosAntes = valorII + valorIPI + valorPIS + valorCOFINS + valorICMS;
+        const custoFinalAntes = valorBase + totalTributosAntes;
+        
+        percIi.textContent = percII.toFixed(2).replace('.', ',');
+        resIi.textContent = formatCurrency(valorII);
+        percIpi.textContent = percIPI.toFixed(2).replace('.', ',');
+        resIpi.textContent = formatCurrency(valorIPI);
+        percPis.textContent = percPisAtual.toFixed(2).replace('.', ',');
+        resPis.textContent = formatCurrency(valorPIS);
+        percCofins.textContent = percCofinsAtual.toFixed(2).replace('.', ',');
+        resCofins.textContent = formatCurrency(valorCOFINS);
+        percIcms.textContent = percIcmsAtual.toFixed(2).replace('.', ',');
+        resIcms.textContent = formatCurrency(valorICMS);
+        totalAntes.textContent = formatCurrency(totalTributosAntes);
+        custoTotalAntesEl.textContent = formatCurrency(custoFinalAntes);
+
+        const valorIVA = (valorBase * aliquotas.iva) / 100;
+        const custoFinalDepois = valorBase + valorIVA;
+        
+        resIva.textContent = formatCurrency(valorIVA);
+        totalDepois.textContent = formatCurrency(valorIVA);
+        custoTotalDepoisEl.textContent = formatCurrency(custoFinalDepois);
+
+        // --- CÁLCULOS OPERAÇÃO DE VENDA ---
+        const valorAgregadoAntes = custoFinalAntes * (percValorAgregado / 100);
+        const precoAntesIcms = custoFinalAntes + valorAgregadoAntes;
+        const fatorIcms = 1 - (percIcmsVenda / 100);
+        const precoComIcms = precoAntesIcms / fatorIcms;
+        const valorIcmsVenda = precoComIcms * (percIcmsVenda / 100);
+        
+        const percPisVenda = aliquotas.pis[regimeVenda];
+        const percCofinsVenda = aliquotas.cofins[regimeVenda];
+        const valorPisVenda = precoAntesIcms * (percPisVenda / 100);
+        const valorCofinsVenda = precoAntesIcms * (percCofinsVenda / 100);
+        const precoFinalVendaAntes = precoComIcms + valorPisVenda + valorCofinsVenda;
+
+        vendaPrecoCustoAntes.textContent = formatCurrency(custoFinalAntes);
+        vendaPercLucroAntes.textContent = percValorAgregado;
+        vendaLucroAntes.textContent = formatCurrency(valorAgregadoAntes);
+        vendaBaseIcmsAntes.textContent = formatCurrency(precoAntesIcms);
+        vendaPercIcmsAntes.textContent = percIcmsVenda;
+        vendaIcmsAntes.textContent = formatCurrency(valorIcmsVenda);
+        vendaPercPisAntes.textContent = percPisVenda.toFixed(2).replace('.', ',');
+        vendaPisAntes.textContent = formatCurrency(valorPisVenda);
+        vendaPercCofinsAntes.textContent = percCofinsVenda.toFixed(2).replace('.', ',');
+        vendaCofinsAntes.textContent = formatCurrency(valorCofinsVenda);
+        vendaPrecoComIcmsBc.textContent = formatCurrency(precoComIcms);
+        vendaTotalAntes.textContent = formatCurrency(precoFinalVendaAntes);
+
+        const valorAgregadoDepois = valorBase * (percValorAgregado / 100);
+        const precoAntesIva = valorBase + valorAgregadoDepois;
+        const valorIvaVenda = precoAntesIva * (aliquotas.iva / 100);
+        const precoFinalVendaDepois = precoAntesIva + valorIvaVenda;
+
+        vendaPrecoCustoDepois.textContent = formatCurrency(valorBase);
+        vendaPercLucroDepois.textContent = percValorAgregado;
+        vendaLucroDepois.textContent = formatCurrency(valorAgregadoDepois);
+        vendaBaseIvaDepois.textContent = formatCurrency(precoAntesIva);
+        vendaIvaDepois.textContent = formatCurrency(valorIvaVenda);
+        vendaTotalDepois.textContent = formatCurrency(precoFinalVendaDepois);
+
+        // --- CÁLCULOS APURAÇÃO ---
+        const icmsRecolher = valorIcmsVenda - valorICMS;
+        const ivaRecolher = valorIvaVenda - valorIVA;
+        let pisRecolher;
+        let cofinsRecolher;
+
+        if (regimeVenda === 'presumido') {
+            apuracaoPisCreditoRow.style.display = 'none';
+            apuracaoCofinsCreditoRow.style.display = 'none';
+            pisRecolher = valorPisVenda;
+            cofinsRecolher = valorCofinsVenda;
+        } else { // Lucro Real
+            apuracaoPisCreditoRow.style.display = 'flex';
+            apuracaoCofinsCreditoRow.style.display = 'flex';
+            pisRecolher = valorPisVenda - valorPIS;
+            cofinsRecolher = valorCofinsVenda - valorCOFINS;
+        }
+
+        apuracaoIcmsDebito.textContent = formatCurrency(valorIcmsVenda);
+        apuracaoIcmsCredito.textContent = formatCurrency(valorICMS);
+        apuracaoIcmsRecolher.textContent = formatCurrency(icmsRecolher);
+        
+        apuracaoPisDebito.textContent = formatCurrency(valorPisVenda);
+        apuracaoPisCredito.textContent = formatCurrency(valorPIS);
+        apuracaoPisRecolher.textContent = formatCurrency(pisRecolher);
+
+        apuracaoCofinsDebito.textContent = formatCurrency(valorCofinsVenda);
+        apuracaoCofinsCredito.textContent = formatCurrency(valorCOFINS);
+        apuracaoCofinsRecolher.textContent = formatCurrency(cofinsRecolher);
+        
+        apuracaoIvaDebito.textContent = formatCurrency(valorIvaVenda);
+        apuracaoIvaCredito.textContent = formatCurrency(valorIVA);
+        apuracaoIvaRecolher.textContent = formatCurrency(ivaRecolher);
+
+        // --- CÁLCULO CARGA TRIBUTÁRIA TOTAL ---
+        const cargaTotalAntes = icmsRecolher + pisRecolher + cofinsRecolher;
+        const cargaTotalDepois = ivaRecolher;
+
+        cargaTotalAntesEl.textContent = formatCurrency(cargaTotalAntes);
+        cargaTotalDepoisEl.textContent = formatCurrency(cargaTotalDepois);
     }
-  }
 
-  // Initialize at first paint (no flash)
-  apply(current());
-
-  // React to system changes if user never set a preference
-  try {
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
-        var saved = localStorage.getItem(storageKey);
-        if (!saved) apply(current());
-      });
-    }
-  } catch(e) {}
-
-  if (btn) {
-    btn.addEventListener('click', function() {
-      var now = current();
-      var next = (now === 'dark') ? 'light' : 'dark';
-      localStorage.setItem(storageKey, next);
-      apply(next);
+    valorBaseInput.addEventListener('input', (e) => {
+        const input = e.target;
+        let value = input.value.replace(/\D/g, '');
+        if (value) {
+            const numberValue = parseInt(value, 10) / 100;
+            input.value = numberValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else { input.value = ''; }
+        calcular();
     });
-  }
-})();
-</script>
 
+    const allInputs = [iiInput, ipiInput, pisCofinsRegimeSelect, icmsOrigemSelect, lucroBrutoInput, icmsVendaSelect, pisCofinsRegimeVendaSelect];
+    allInputs.forEach(element => {
+        element.addEventListener('input', calcular);
+    });
+    
+    // --- LÓGICA DE TOGGLE LATERAL ---
+    const iconPaths = {
+        hide: "M15.75 19.5L8.25 12l7.5-7.5", // Chevron Left
+        show: "M8.25 4.5l7.5 7.5-7.5 7.5"   // Chevron Right
+    };
+
+    toggleBtn.addEventListener('click', () => {
+        const isHidden = compraParamsCol.classList.contains('hidden');
+        
+        compraParamsCol.classList.toggle('hidden');
+        vendaParamsCol.classList.toggle('hidden');
+
+        compraResultsCol.classList.toggle('md:col-span-3');
+        compraResultsCol.classList.toggle('md:col-span-4');
+        vendaResultsCol.classList.toggle('md:col-span-3');
+        vendaResultsCol.classList.toggle('md:col-span-4');
+        
+        if (isHidden) { 
+            toggleBtnText.textContent = 'Ocultar Parâmetros';
+            toggleBtnIcon.setAttribute('d', iconPaths.hide);
+        } else { 
+            toggleBtnText.textContent = 'Mostrar Parâmetros';
+            toggleBtnIcon.setAttribute('d', iconPaths.show);
+        }
+    });
+
+    // --- LÓGICA DARK MODE ---
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('theme-toggle-sun');
+    const moonIcon = document.getElementById('theme-toggle-moon');
+
+    const applyTheme = (theme) => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+    };
+
+    themeToggleBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        const newTheme = isDark ? 'light' : 'dark';
+        localStorage.setItem('color-theme', newTheme);
+        applyTheme(newTheme);
+    });
+
+    const savedTheme = localStorage.getItem('color-theme');
+
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    } else {
+        applyTheme('light'); 
+    }
+
+
+    window.addEventListener('load', calcular);
+
+</script>
 </body>
 </html>
 
